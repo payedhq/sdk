@@ -23,7 +23,6 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type AccountProfileClient interface {
 	ProfileToProfileTransfer(ctx context.Context, in *DebitAccountProfileRequest, opts ...grpc.CallOption) (*DebitAccountProfileResponse, error)
-	ReverseProfileToProfileTransfer(ctx context.Context, in *ReverseDebitAccountProfileRequest, opts ...grpc.CallOption) (*ReverseDebitAccountProfileResponse, error)
 	FetchProfileToProfileTransferByReference(ctx context.Context, in *FetchTransferByReferenceRequest, opts ...grpc.CallOption) (*DebitAccountProfileResponse, error)
 }
 
@@ -44,15 +43,6 @@ func (c *accountProfileClient) ProfileToProfileTransfer(ctx context.Context, in 
 	return out, nil
 }
 
-func (c *accountProfileClient) ReverseProfileToProfileTransfer(ctx context.Context, in *ReverseDebitAccountProfileRequest, opts ...grpc.CallOption) (*ReverseDebitAccountProfileResponse, error) {
-	out := new(ReverseDebitAccountProfileResponse)
-	err := c.cc.Invoke(ctx, "/payed_grpc.account_profiles.AccountProfile/ReverseProfileToProfileTransfer", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 func (c *accountProfileClient) FetchProfileToProfileTransferByReference(ctx context.Context, in *FetchTransferByReferenceRequest, opts ...grpc.CallOption) (*DebitAccountProfileResponse, error) {
 	out := new(DebitAccountProfileResponse)
 	err := c.cc.Invoke(ctx, "/payed_grpc.account_profiles.AccountProfile/FetchProfileToProfileTransferByReference", in, out, opts...)
@@ -67,7 +57,6 @@ func (c *accountProfileClient) FetchProfileToProfileTransferByReference(ctx cont
 // for forward compatibility
 type AccountProfileServer interface {
 	ProfileToProfileTransfer(context.Context, *DebitAccountProfileRequest) (*DebitAccountProfileResponse, error)
-	ReverseProfileToProfileTransfer(context.Context, *ReverseDebitAccountProfileRequest) (*ReverseDebitAccountProfileResponse, error)
 	FetchProfileToProfileTransferByReference(context.Context, *FetchTransferByReferenceRequest) (*DebitAccountProfileResponse, error)
 	mustEmbedUnimplementedAccountProfileServer()
 }
@@ -78,9 +67,6 @@ type UnimplementedAccountProfileServer struct {
 
 func (UnimplementedAccountProfileServer) ProfileToProfileTransfer(context.Context, *DebitAccountProfileRequest) (*DebitAccountProfileResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProfileToProfileTransfer not implemented")
-}
-func (UnimplementedAccountProfileServer) ReverseProfileToProfileTransfer(context.Context, *ReverseDebitAccountProfileRequest) (*ReverseDebitAccountProfileResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ReverseProfileToProfileTransfer not implemented")
 }
 func (UnimplementedAccountProfileServer) FetchProfileToProfileTransferByReference(context.Context, *FetchTransferByReferenceRequest) (*DebitAccountProfileResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FetchProfileToProfileTransferByReference not implemented")
@@ -116,24 +102,6 @@ func _AccountProfile_ProfileToProfileTransfer_Handler(srv interface{}, ctx conte
 	return interceptor(ctx, in, info, handler)
 }
 
-func _AccountProfile_ReverseProfileToProfileTransfer_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ReverseDebitAccountProfileRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(AccountProfileServer).ReverseProfileToProfileTransfer(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/payed_grpc.account_profiles.AccountProfile/ReverseProfileToProfileTransfer",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AccountProfileServer).ReverseProfileToProfileTransfer(ctx, req.(*ReverseDebitAccountProfileRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 func _AccountProfile_FetchProfileToProfileTransferByReference_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(FetchTransferByReferenceRequest)
 	if err := dec(in); err != nil {
@@ -162,10 +130,6 @@ var AccountProfile_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ProfileToProfileTransfer",
 			Handler:    _AccountProfile_ProfileToProfileTransfer_Handler,
-		},
-		{
-			MethodName: "ReverseProfileToProfileTransfer",
-			Handler:    _AccountProfile_ReverseProfileToProfileTransfer_Handler,
 		},
 		{
 			MethodName: "FetchProfileToProfileTransferByReference",
