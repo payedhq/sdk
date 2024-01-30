@@ -24,6 +24,9 @@ const _ = grpc.SupportPackageIsVersion7
 type AccountProfileClient interface {
 	ProfileToProfileTransfer(ctx context.Context, in *DebitAccountProfileRequest, opts ...grpc.CallOption) (*DebitAccountProfileResponse, error)
 	FetchProfileToProfileTransferByReference(ctx context.Context, in *FetchTransferByReferenceRequest, opts ...grpc.CallOption) (*DebitAccountProfileResponse, error)
+	ValidateAccessTokenForProfile(ctx context.Context, in *ValidateAccessTokenForProfileRequest, opts ...grpc.CallOption) (*ValidateAccessTokenForProfileResponse, error)
+	FetchProfileBalance(ctx context.Context, in *FetchProfileBalanceRequest, opts ...grpc.CallOption) (*FetchProfileBalanceResponse, error)
+	NotifyProfile(ctx context.Context, in *NotifyProfileRequest, opts ...grpc.CallOption) (*NotifyProfileResponse, error)
 }
 
 type accountProfileClient struct {
@@ -52,12 +55,42 @@ func (c *accountProfileClient) FetchProfileToProfileTransferByReference(ctx cont
 	return out, nil
 }
 
+func (c *accountProfileClient) ValidateAccessTokenForProfile(ctx context.Context, in *ValidateAccessTokenForProfileRequest, opts ...grpc.CallOption) (*ValidateAccessTokenForProfileResponse, error) {
+	out := new(ValidateAccessTokenForProfileResponse)
+	err := c.cc.Invoke(ctx, "/payed_grpc.account_profiles.AccountProfile/ValidateAccessTokenForProfile", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *accountProfileClient) FetchProfileBalance(ctx context.Context, in *FetchProfileBalanceRequest, opts ...grpc.CallOption) (*FetchProfileBalanceResponse, error) {
+	out := new(FetchProfileBalanceResponse)
+	err := c.cc.Invoke(ctx, "/payed_grpc.account_profiles.AccountProfile/FetchProfileBalance", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *accountProfileClient) NotifyProfile(ctx context.Context, in *NotifyProfileRequest, opts ...grpc.CallOption) (*NotifyProfileResponse, error) {
+	out := new(NotifyProfileResponse)
+	err := c.cc.Invoke(ctx, "/payed_grpc.account_profiles.AccountProfile/NotifyProfile", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AccountProfileServer is the server API for AccountProfile service.
 // All implementations must embed UnimplementedAccountProfileServer
 // for forward compatibility
 type AccountProfileServer interface {
 	ProfileToProfileTransfer(context.Context, *DebitAccountProfileRequest) (*DebitAccountProfileResponse, error)
 	FetchProfileToProfileTransferByReference(context.Context, *FetchTransferByReferenceRequest) (*DebitAccountProfileResponse, error)
+	ValidateAccessTokenForProfile(context.Context, *ValidateAccessTokenForProfileRequest) (*ValidateAccessTokenForProfileResponse, error)
+	FetchProfileBalance(context.Context, *FetchProfileBalanceRequest) (*FetchProfileBalanceResponse, error)
+	NotifyProfile(context.Context, *NotifyProfileRequest) (*NotifyProfileResponse, error)
 	mustEmbedUnimplementedAccountProfileServer()
 }
 
@@ -70,6 +103,15 @@ func (UnimplementedAccountProfileServer) ProfileToProfileTransfer(context.Contex
 }
 func (UnimplementedAccountProfileServer) FetchProfileToProfileTransferByReference(context.Context, *FetchTransferByReferenceRequest) (*DebitAccountProfileResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method FetchProfileToProfileTransferByReference not implemented")
+}
+func (UnimplementedAccountProfileServer) ValidateAccessTokenForProfile(context.Context, *ValidateAccessTokenForProfileRequest) (*ValidateAccessTokenForProfileResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ValidateAccessTokenForProfile not implemented")
+}
+func (UnimplementedAccountProfileServer) FetchProfileBalance(context.Context, *FetchProfileBalanceRequest) (*FetchProfileBalanceResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method FetchProfileBalance not implemented")
+}
+func (UnimplementedAccountProfileServer) NotifyProfile(context.Context, *NotifyProfileRequest) (*NotifyProfileResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method NotifyProfile not implemented")
 }
 func (UnimplementedAccountProfileServer) mustEmbedUnimplementedAccountProfileServer() {}
 
@@ -120,6 +162,60 @@ func _AccountProfile_FetchProfileToProfileTransferByReference_Handler(srv interf
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AccountProfile_ValidateAccessTokenForProfile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ValidateAccessTokenForProfileRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AccountProfileServer).ValidateAccessTokenForProfile(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/payed_grpc.account_profiles.AccountProfile/ValidateAccessTokenForProfile",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AccountProfileServer).ValidateAccessTokenForProfile(ctx, req.(*ValidateAccessTokenForProfileRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AccountProfile_FetchProfileBalance_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FetchProfileBalanceRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AccountProfileServer).FetchProfileBalance(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/payed_grpc.account_profiles.AccountProfile/FetchProfileBalance",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AccountProfileServer).FetchProfileBalance(ctx, req.(*FetchProfileBalanceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _AccountProfile_NotifyProfile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(NotifyProfileRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AccountProfileServer).NotifyProfile(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/payed_grpc.account_profiles.AccountProfile/NotifyProfile",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AccountProfileServer).NotifyProfile(ctx, req.(*NotifyProfileRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AccountProfile_ServiceDesc is the grpc.ServiceDesc for AccountProfile service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -134,6 +230,18 @@ var AccountProfile_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "FetchProfileToProfileTransferByReference",
 			Handler:    _AccountProfile_FetchProfileToProfileTransferByReference_Handler,
+		},
+		{
+			MethodName: "ValidateAccessTokenForProfile",
+			Handler:    _AccountProfile_ValidateAccessTokenForProfile_Handler,
+		},
+		{
+			MethodName: "FetchProfileBalance",
+			Handler:    _AccountProfile_FetchProfileBalance_Handler,
+		},
+		{
+			MethodName: "NotifyProfile",
+			Handler:    _AccountProfile_NotifyProfile_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
